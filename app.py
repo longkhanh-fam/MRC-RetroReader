@@ -12,7 +12,7 @@ os.environ["TOKENIZERS_PARALLELISM"] = "true"
 # SETTING PAGE CONFIG TO WIDE MODE
 st.set_page_config(layout="wide")
 
-@st.cache
+@st.cache_resource
 def from_library():
     from retro_reader import RetroReader
     from retro_reader import constants as C
@@ -34,13 +34,13 @@ my_hash_func = {
 #     return RetroReader.load(config_file=config_file)
 
 
-@st.cache(hash_funcs=my_hash_func, allow_output_mutation=True)
+@st.cache_resource(hash_funcs=my_hash_func, allow_output_mutation=True)
 def load_en_electra_base_model():
     config_file = "configs/inference_en_electra_base.yaml"
     return RetroReader.load(config_file=config_file)
 
 
-@st.cache(hash_funcs=my_hash_func, allow_output_mutation=True)
+@st.cache_resource(hash_funcs=my_hash_func, allow_output_mutation=True)
 def load_en_electra_large_model():
     config_file = "configs/inference_en_electra_large.yaml"
     return RetroReader.load(config_file=config_file)
