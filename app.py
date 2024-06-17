@@ -10,7 +10,7 @@ os.environ["TOKENIZERS_PARALLELISM"] = "true"
 # Setting page config to wide mode
 st.set_page_config(layout="wide")
 
-@st.experimental_singleton
+@st.cache_resource
 def from_library():
     from retro_reader import RetroReader
     from retro_reader import constants as C
@@ -25,17 +25,15 @@ my_hash_func = {
     tokenizers.AddedToken: lambda _: None
 }
 
-@st.experimental_singleton(hash_funcs=my_hash_func)
+@st.cache_resource(hash_funcs=my_hash_func)
 def load_en_electra_base_model():
     config_file = "configs/inference_en_electra_base.yaml"
     return RetroReader.load(config_file=config_file)
 
-@st.experimental_singleton(hash_funcs=my_hash_func)
+@st.cache_resource(hash_funcs=my_hash_func)
 def load_en_electra_large_model():
     config_file = "configs/inference_en_electra_large.yaml"
     return RetroReader.load(config_file=config_file)
-
-
 RETRO_READER_HOST = {
     # "klue/roberta-large": load_ko_roberta_large_model(),
     "google/electra-base-discriminator": load_en_electra_base_model(),
