@@ -34,64 +34,35 @@ def load_en_electra_base_model():
 def load_en_electra_large_model():
     config_file = "configs/inference_en_electra_large.yaml"
     return RetroReader.load(config_file=config_file)
+
+
 RETRO_READER_HOST = {
-    # "klue/roberta-large": load_ko_roberta_large_model(),
     "google/electra-base-discriminator": load_en_electra_base_model(),
     "google/electra-large-discriminator": load_en_electra_large_model(),
 }
 
-
 def main():
+    # Sidebar Introduction
+    st.sidebar.title("Welcome to Retro Reader")
+    st.sidebar.write("""
+    Explore the capabilities of state-of-the-art NLP models with Retro Reader. Select a model, type your query, and provide some context. See how the model interprets and processes your input to generate answers.
+    """)
+
     st.title("Retrospective Reader Demo")
-    
     st.markdown("## Model name")
     option = st.selectbox(
         label="Choose the model used in retro reader",
         options=(
-            #"[ko_KR] klue/roberta-large",
             "[1] google/electra-base-discriminator",
             "[2] google/electra-large-discriminator"
         ),
         index=1,
     )
     lang_code, model_name = option.split(" ")
-    
     retro_reader = RETRO_READER_HOST[model_name]
-    
-    #retro_reader = load_model()
+
     lang_prefix = "EN"
     height = 200
-    
-    # retro_reader.null_score_diff_threshold = st.sidebar.slider(
-    #     label="null_score_diff_threshold",
-    #     min_value=-10.0, max_value=10.0, value=0.0, step=1.0,
-    #     help="ma!",
-    # )
-    # retro_reader.rear_threshold = st.sidebar.slider(
-    #     label="rear_threshold",
-    #     min_value=-10.0, max_value=10.0, value=0.0, step=1.0,
-    #     help="ma!",
-    # )
-    # retro_reader.n_best_size = st.sidebar.slider(
-    #     label="n_best_size",
-    #     min_value=1, max_value=50, value=20, step=1,
-    #     help="ma!",
-    # )
-    # retro_reader.beta1 = st.sidebar.slider(
-    #     label="beta1",
-    #     min_value=-10.0, max_value=10.0, value=1.0, step=1.0,
-    #     help="ma!",
-    # )
-    # retro_reader.beta2 = st.sidebar.slider(
-    #     label="beta2",
-    #     min_value=-10.0, max_value=10.0, value=1.0, step=1.0,
-    #     help="ma!",
-    # )
-    # retro_reader.best_cof = st.sidebar.slider(
-    #     label="best_cof",
-    #     min_value=-10.0, max_value=10.0, value=1.0, step=1.0,
-    #     help="ma!",
-    # )
     return_submodule_outputs = True
     
     st.markdown("## Demonstration")
@@ -113,11 +84,7 @@ def main():
         
     if submit_button:
         with st.spinner("Please wait.."):
-            outputs = retro_reader(
-                query=query,
-                context=context,
-                return_submodule_outputs=return_submodule_outputs,
-            )
+            outputs = retro_reader(query=query, context=context, return_submodule_outputs=return_submodule_outputs)
         answer, score = outputs[0]["id-01"], outputs[1]
         if not answer:
             answer = "No answer"
@@ -133,7 +100,6 @@ def main():
             st.json(score_diff)
             st.markdown("### N Best Predictions (from intensive reader)")
             st.json(nbest_preds)
-    
 
 if __name__ == "__main__":
     main()
