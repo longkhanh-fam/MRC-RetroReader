@@ -12,7 +12,7 @@ os.environ["TOKENIZERS_PARALLELISM"] = "true"
 # SETTING PAGE CONFIG TO WIDE MODE
 st.set_page_config(layout="wide")
 
-@st.cache_data
+@st.cache
 def from_library():
     from retro_reader import RetroReader
     from retro_reader import constants as C
