@@ -1,18 +1,16 @@
 import streamlit as st
-
 import io
 import os
 import yaml
 import pyarrow
 import tokenizers
 
-
 os.environ["TOKENIZERS_PARALLELISM"] = "true"
 
-# SETTING PAGE CONFIG TO WIDE MODE
+# Setting page config to wide mode
 st.set_page_config(layout="wide")
 
-@st.cache
+@st.experimental_singleton
 def from_library():
     from retro_reader import RetroReader
     from retro_reader import constants as C
@@ -20,7 +18,6 @@ def from_library():
 
 C, RetroReader = from_library()
 
-# https://stackoverflow.com/questions/70274841/streamlit-unhashable-typeerror-when-i-use-st-cache
 my_hash_func = {
     io.TextIOWrapper: lambda _: None,
     pyarrow.lib.Buffer: lambda _: 0,
@@ -28,19 +25,12 @@ my_hash_func = {
     tokenizers.AddedToken: lambda _: None
 }
 
-# @st.cache(hash_funcs=my_hash_func, allow_output_mutation=True)
-# def load_ko_roberta_large_model():
-#     config_file = "configs/inference_ko_roberta_large.yaml"
-#     return RetroReader.load(config_file=config_file)
-
-
-@st.cache_resource(hash_funcs=my_hash_func, allow_output_mutation=True)
+@st.experimental_singleton(hash_funcs=my_hash_func)
 def load_en_electra_base_model():
     config_file = "configs/inference_en_electra_base.yaml"
     return RetroReader.load(config_file=config_file)
 
-
-@st.cache_resource(hash_funcs=my_hash_func, allow_output_mutation=True)
+@st.experimental_singleton(hash_funcs=my_hash_func)
 def load_en_electra_large_model():
     config_file = "configs/inference_en_electra_large.yaml"
     return RetroReader.load(config_file=config_file)
